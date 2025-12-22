@@ -1,23 +1,21 @@
+# Pixio Community Lite Edition
+
+Introducing Pixio Community Lite Edition, a cutting-edge web application designed to breathe life into your creativity. Imagine being able to transform simple textual prompts into stunning visual art. With Pixio, that imagination becomes a reality.
+
+Built on the foundation of various advanced AI models, Pixio Community Lite Edition empowers users to generate stable and visually captivating images by merely entering a prompt. Whether you're an artist looking to explore new horizons or a hobbyist seeking to express yourself in a novel way, Pixio offers a seamless experience that caters to your artistic desires.
+
+Here's how it works:
+1. **Enter Your Prompt**: Start with a thought, an idea, or even a mood. Type it into Pixio, and watch as the platform interprets your words.
+2. **Select Your Model**: Choose from a range of AI models, each with its unique style and capability. From abstract to realistic, Pixio has it all.
+3. **Generate and Admire**: With a click of a button, your prompt becomes a visual masterpiece. It's art at the speed of thought.
+4. **Share and Connect**: Want to showcase your creation? Pixio allows you to send your generated images directly to a Discord channel, bridging creativity and community.
+
+Pixio Community Lite Edition is more than just a tool; it's a community of creators, innovators, and dreamers. It's where words meet art, and imagination meets reality. Join us today, and take the first step on a journey filled with endless creative possibilities.
+
+
 # New UI coming soon!
 
 ![image](https://github.com/Tech-in-Schools-Inititaitive/pixio-community-lite-edition/assets/6137292/9a8fdaab-4a5f-49d6-b635-fc8f49848cea)
-
-## Updates
-
-🌙 Dark Mode Added
-
-![image](https://github.com/Tech-in-Schools-Inititaitive/pixio-community-lite-edition/assets/6137292/481c772c-fae7-4d46-8cb8-5a04ef065a9b)
-
-We're excited to announce the addition of Dark Mode in Pixio! This feature provides a sleek and eye-friendly interface, perfect for those late-night creative sessions.
-
-### How to Enable Dark Mode
-
-Switching to Dark Mode is simple. Just look for the Dark Mode toggle in the menu, and with a single click, you can enjoy the new look.
-
-
-# Pixio Community Lite Edition
-
-Pixio Community Lite Edition is a web application that generates stable images based on user prompts using various AI models. It provides an interface for users to enter a prompt, select models, and generate images. Users can also send the generated images to a Discord channel. 
 
 ## Technologies Used
 
