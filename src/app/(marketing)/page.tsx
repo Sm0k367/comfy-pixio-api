@@ -1,7 +1,3 @@
-// src/app/(marketing)/page.tsx
-
-'use client';
-
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -23,6 +19,7 @@ import { toast } from 'sonner';
 import { createClient } from '@/lib/supabase/client';
 import { Subscription } from '@/types/db_types';
 import { Footer } from '@/components/shared/footer';
+import { Navbar } from '@/components/shared/navbar';
 
 // Define prop types for components
 interface WorkflowCardProps {
@@ -678,562 +675,53 @@ const PricingSection = ({ userTierId, isAuthenticated }: PricingSectionProps) =>
 
 
 // --- Main Landing Page Component ---
-export default function LandingPage() {
-  const [mounted, setMounted] = useState(false);
-  const { scrollYProgress } = useScroll();
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0.8]);
-  const heroY = useTransform(scrollYProgress, [0, 0.1], [0, -50]);
-  const progressBarScaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
-
-  // State for user and subscription data
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userTierId, setUserTierId] = useState<string>('free'); // Default to free
-
-  // Fetch user and subscription data on client-side
-  useEffect(() => {
-    setMounted(true);
-
-    const checkAuthAndSubscription = async () => {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      setIsAuthenticated(!!user);
-
-      if (user) {
-        // Fetch subscription if user is logged in
-        const { data: subscription } = await supabase
-          .from('subscriptions')
-          .select('*, prices(id, products(*))')
-          .eq('user_id', user.id)
-          .in('status', ['trialing', 'active'])
-          .maybeSingle();
-
-        if (subscription) {
-          const priceId = subscription.prices?.id;
-          const { tier } = getTierByPriceId(priceId);
-          if (tier) {
-            setUserTierId(tier.id);
-          }
-        } else {
-          setUserTierId('free'); // User is logged in but has no active subscription
-        }
-      } else {
-        setUserTierId('free'); // User is not logged in
-      }
-    };
-
-    checkAuthAndSubscription();
-  }, []);
+export default function MarketingPage() {
+  const images = Array.from({ length: 69 }, (_, i) => `/brand_media/${i + 1}.jpeg`);
 
   return (
-    <>
-      {/* Progress bar - only on client */}
-      {mounted && (
-        <motion.div
-          className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent z-50 origin-left"
-          style={{ scaleX: progressBarScaleX }}
-        />
-      )}
-
-      {/* Animated background */}
-      <AnimatedBackground />
-
-      {/* Hero section */}
-      <motion.section
-        className="relative py-24 md:py-36 z-10"
-        style={mounted ? { opacity: heroOpacity, y: heroY } : {}}
-      >
-        <div className="container mx-auto px-4 relative">
-          <motion.div
-            className="max-w-3xl mx-auto text-center"
-            initial={mounted ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }}
-            animate={mounted ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8 }}
-          >
-            <motion.div
-              className="inline-block mb-4 px-4 py-1.5 bg-white/10 dark:bg-white/5 backdrop-blur-xl rounded-full text-foreground/90 text-sm border border-white/20 shadow-lg"
-              initial={mounted ? { opacity: 0, y: -20 } : { opacity: 1, y: 0 }}
-              animate={mounted ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.1, duration: 0.6 }}
-            >
-              <span className="flex items-center gap-1.5">
-                <Sparkles className="h-4 w-4 text-accent/80" />
-                Powered by Pixio A100 GPUs
-              </span>
-            </motion.div>
-
-            <motion.div
-              initial={mounted ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }}
-              animate={mounted ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.3, duration: 0.8 }}
-            >
-              <h1
-                className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-tight bg-clip-text text-transparent"
-                style={{
-                  backgroundImage: "linear-gradient(to right, #7068F4, #FF64B4, #ffac4c)",
-                  backgroundSize: "200% 200%",
-                  ...(mounted ? {
-                    animation: "gradientMove 15s ease infinite"
-                  } : {})
-                }}
-              >
-                Pixio API Starter
-              </h1>
-
-              <style jsx global>{`
-                @keyframes gradientMove {
-                  0% { background-position: 0% 50% }
-                  50% { background-position: 100% 50% }
-                  100% { background-position: 0% 50% }
-                }
-              `}</style>
-            </motion.div>
-
-            <motion.p
-              className="text-lg sm:text-xl text-foreground/80 mb-8 leading-relaxed"
-              initial={mounted ? { opacity: 0 } : { opacity: 1 }}
-              animate={mounted ? { opacity: 1 } : {}}
-              transition={{ delay: 0.5, duration: 0.8 }}
-            >
-              Unleash AI creativity with powerful machines for stunning image and video generation,
-              powered by Supabase and a flexible credit system
-            </motion.p>
-
-            <motion.div
-  className="flex flex-col sm:flex-row gap-4 justify-center"
-  initial={mounted ? { opacity: 0 } : { opacity: 1 }}
-  animate={mounted ? { opacity: 1 } : {}}
-  transition={{ delay: 0.7, duration: 0.8 }}
->
-  <MagneticButton className="bg-gradient-to-r from-primary/90 to-secondary/90 hover:from-primary/95 hover:to-secondary/95 text-white rounded-md py-2 px-4 font-medium shadow-md hover:shadow-lg transition-shadow">
-    <Link href="https://api.myapps.ai" target="_blank" rel="noopener noreferrer" className="flex items-center">
-      <ExternalLink className="mr-2 h-4 w-4" />
-      Visit Pixio API
-    </Link>
-  </MagneticButton>
-
-  <MagneticButton
-    className="glass-button bg-white/10 hover:bg-white/20 text-foreground rounded-md py-2 px-4 font-medium"
-    onClick={() => {
-      if (mounted) {
-        const pricingSection = document.getElementById('pricing');
-        if (pricingSection) {
-          pricingSection.scrollIntoView({ behavior: 'smooth' });
-        }
-      }
-    }}
-  >
-    View Plans
-  </MagneticButton>
-  
-  <MagneticButton className="glass-button bg-white/10 hover:bg-white/20 text-foreground rounded-md py-2 px-4 font-medium">
-    <Link href="https://github.com/afarhadi99/pixio-api-starter" target="_blank" rel="noopener noreferrer" className="flex items-center">
-      <Github className="mr-2 h-4 w-4" />
-      Fork Repo
-    </Link>
-  </MagneticButton>
-</motion.div>
-          </motion.div>
-        </div>
-
-        {/* Bouncing arrow indicator - client-side only */}
-        {mounted && (
-          <motion.div
-            className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-            animate={{
-              y: [0, 10, 0]
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              repeatType: "loop"
-            }}
-          >
-            <motion.svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-primary/70"
-              whileHover={{ scale: 1.2 }}
-            >
-              <path d="M12 5v14M5 12l7 7 7-7"/>
-            </motion.svg>
-          </motion.div>
-        )}
-      </motion.section>
-
-      {/* Features section */}
-      <section className="py-20 z-10 relative">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <GradientHeading className="mx-auto justify-center">
-              Powerful AI Generation Features
-            </GradientHeading>
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-grow">
+        <section className="relative py-20 text-center">
+          <div className="container">
+            <h1 className="text-4xl font-bold md:text-6xl">
+              Welcome to AI Lounge After Dark
+            </h1>
+            <p className="mt-4 text-lg text-muted-foreground md:text-xl">
+              Your creative space for AI-powered media generation.
+            </p>
+            <div className="mt-8">
+              <video
+                className="w-full max-w-4xl mx-auto rounded-lg shadow-lg"
+                src="/brand_media/grok-video-1974311848104046593.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+              />
+            </div>
           </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Feature 1 */}
-            <MouseTrackCard>
-              <motion.div
-                className="glass-card rounded-xl p-6 backdrop-blur-lg border border-white/20 dark:border-white/10 h-full"
-                initial={mounted ? { opacity: 0, y: 30 } : { opacity: 1, y: 0 }}
-                whileInView={mounted ? { opacity: 1, y: 0 } : {}}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-              >
-                <div className="w-12 h-12 bg-primary/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
+        </section>
+        <section className="py-20">
+          <div className="container">
+            <h2 className="mb-12 text-3xl font-bold text-center md:text-4xl">
+              Our Gallery
+            </h2>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+              {images.map((src, index) => (
+                <div key={index} className="overflow-hidden rounded-lg shadow-lg">
+                  <img
+                    src={src}
+                    alt={`Gallery image ${index + 1}`}
+                    className="object-cover w-full h-full"
+                  />
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-primary">Image Generation</h3>
-                <p className="text-foreground/80">
-                  Create stunning images using advanced AI machines powered by the Pixio API. Turn text prompts into visual art.
-                </p>
-              </motion.div>
-            </MouseTrackCard>
-
-            {/* Feature 2 */}
-            <MouseTrackCard>
-              <motion.div
-                className="glass-card rounded-xl p-6 backdrop-blur-lg border border-white/20 dark:border-white/10 h-full"
-                initial={mounted ? { opacity: 0, y: 30 } : { opacity: 1, y: 0 }}
-                whileInView={mounted ? { opacity: 1, y: 0 } : {}}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                <div className="w-12 h-12 bg-secondary/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold mb-2 text-secondary">Video Generation</h3>
-                <p className="text-foreground/80">
-                  Transform concepts into mesmerizing videos. Our API harnesses the power of cutting-edge AI for fluid animations.
-                </p>
-              </motion.div>
-            </MouseTrackCard>
-
-            {/* Feature 3 */}
-            <MouseTrackCard>
-              <motion.div
-                className="glass-card rounded-xl p-6 backdrop-blur-lg border border-white/20 dark:border-white/10 h-full"
-                initial={mounted ? { opacity: 0, y: 30 } : { opacity: 1, y: 0 }}
-                whileInView={mounted ? { opacity: 1, y: 0 } : {}}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-              >
-                <div className="w-12 h-12 bg-accent/10 backdrop-blur-sm rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-accent/90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold mb-2 text-accent/90">Credit System</h3>
-                <p className="text-foreground/80">
-                  Flexible credit-based system with pay-as-you-go options. Use credits for different generation types based on your needs.
-                </p>
-              </motion.div>
-            </MouseTrackCard>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
-
-      {/* Pixio API machines section */}
-      <section className="py-20 z-10 relative" id="workflows">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <GradientHeading className="mx-auto justify-center" from="from-secondary" to="to-primary">
-              Pixio API Models
-            </GradientHeading>
-
-            <motion.p
-              className="text-center text-foreground/80 mt-6 mb-12 max-w-3xl mx-auto"
-              initial={mounted ? { opacity: 0 } : { opacity: 1 }}
-              whileInView={mounted ? { opacity: 1 } : {}}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              Powerful AI models integrated into your application for image generation, editing, and video creation
-            </motion.p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <WorkflowCard
-              title="Krea Flux"
-              description="High-quality image generation with the Flux model. Perfect for fashion, portraits, and detailed imagery. Create stunning visuals from text prompts."
-              link="https://api.myapps.ai/share/workflow/user_2avNabxB8PQU2qdh6dkcHx6J7AI/krea"
-              icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>}
-              index={1}
-            />
-
-            <WorkflowCard
-              title="Qwen Edit"
-              description="AI-powered image editing with multiple image inputs and positive/negative prompting. Transform and enhance your images with intelligent edits."
-              link="https://api.myapps.ai/share/workflow/user_34PT7Nq6CR0OkBRluLtZZAPYUWy/qwen-edit-clone"
-              icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
-              </svg>}
-              index={2}
-            />
-
-            <WorkflowCard
-              title="Wan 2.2 First/Last Frame"
-              description="Generate smooth video transitions between two keyframe images. Create cinematic animations from start and end images with AI-powered interpolation."
-              link="https://api.myapps.ai/share/workflow/user_34PT7Nq6CR0OkBRluLtZZAPYUWy/wan22-first-last-frame"
-              icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>}
-              index={3}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* How it works section */}
-      <section className="py-20 z-10 relative">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <GradientHeading className="mx-auto justify-center" from="from-accent/90" via="via-primary" to="to-secondary">
-              How Pixio API Works
-            </GradientHeading>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 relative">
-            {/* Connection line with animated gradient - client-side only */}
-            {mounted && (
-              <div className="hidden md:block absolute top-16 left-[20%] right-[20%] h-1 overflow-hidden">
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-accent"
-                  animate={{
-                    x: ["-100%", "100%"]
-                  }}
-                  transition={{
-                    duration: 5,
-                    repeat: Infinity,
-                    ease: "linear"
-                  }}
-                />
-              </div>
-            )}
-
-            {/* Step 1 */}
-            <MouseTrackCard>
-              <motion.div
-                className="relative glass-card p-6 text-center backdrop-blur-lg border border-white/20 dark:border-white/10 h-full"
-                initial={mounted ? { opacity: 0, y: 30 } : { opacity: 1, y: 0 }}
-                whileInView={mounted ? { opacity: 1, y: 0 } : {}}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-              >
-                <div className="bg-gradient-to-r from-primary to-secondary text-white w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-4 z-10 relative">
-                  {mounted ? (
-                    <motion.span
-                      animate={{ scale: [1, 1.1, 1] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    >
-                      1
-                    </motion.span>
-                  ) : (
-                    <span>1</span>
-                  )}
-                </div>
-                <h3 className="text-xl font-semibold mb-2">Choose Your Type</h3>
-                <p className="text-foreground/80">
-                  Select between image or video generation in the intuitive dashboard interface.
-                </p>
-              </motion.div>
-            </MouseTrackCard>
-
-            {/* Step 2 */}
-            <MouseTrackCard>
-              <motion.div
-                className="relative glass-card p-6 text-center backdrop-blur-lg border border-white/20 dark:border-white/10 h-full"
-                initial={mounted ? { opacity: 0, y: 30 } : { opacity: 1, y: 0 }}
-                whileInView={mounted ? { opacity: 1, y: 0 } : {}}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                <div className="bg-gradient-to-r from-secondary to-accent/80 text-white w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-4 z-10 relative">
-                  {mounted ? (
-                    <motion.span
-                      animate={{ scale: [1, 1.1, 1] }}
-                      transition={{ duration: 2, repeat: Infinity, delay: 0.6 }}
-                    >
-                      2
-                    </motion.span>
-                  ) : (
-                    <span>2</span>
-                  )}
-                </div>
-                <h3 className="text-xl font-semibold mb-2">Create Your Prompt</h3>
-                <p className="text-foreground/80">
-                  Write detailed prompts to guide the AI in generating your desired output.
-                </p>
-              </motion.div>
-            </MouseTrackCard>
-
-            {/* Step 3 */}
-            <MouseTrackCard>
-              <motion.div
-                className="relative glass-card p-6 text-center backdrop-blur-lg border border-white/20 dark:border-white/10 h-full"
-                initial={mounted ? { opacity: 0, y: 30 } : { opacity: 1, y: 0 }}
-                whileInView={mounted ? { opacity: 1, y: 0 } : {}}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-              >
-                <div className="bg-gradient-to-r from-accent/80 to-primary text-white w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-4 z-10 relative">
-                  {mounted ? (
-                    <motion.span
-                      animate={{ scale: [1, 1.1, 1] }}
-                      transition={{ duration: 2, repeat: Infinity, delay: 1.2 }}
-                    >
-                      3
-                    </motion.span>
-                  ) : (
-                    <span>3</span>
-                  )}
-                </div>
-                <h3 className="text-xl font-semibold mb-2">Generate & Download</h3>
-                <p className="text-foreground/80">
-                  Use your credits to generate the media and download your creations instantly.
-                </p>
-              </motion.div>
-            </MouseTrackCard>
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing section - Pass user data */}
-      <section className="py-20 z-10 relative" id="pricing">
-        <div className="container mx-auto px-4">
-          <PricingSection userTierId={userTierId} isAuthenticated={isAuthenticated} />
-        </div>
-      </section>
-
-      {/* Tech stack section */}
-      <motion.section
-        className="py-20 z-10 relative"
-        initial={mounted ? { opacity: 0 } : { opacity: 1 }}
-        whileInView={mounted ? { opacity: 1 } : {}}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-      >
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <GradientHeading className="mx-auto justify-center" from="from-primary" via="via-secondary" to="to-accent">
-              Built With Modern Tech
-            </GradientHeading>
-          </div>
-
-          <motion.p
-            className="text-center text-foreground/80 mb-12 max-w-3xl mx-auto"
-            initial={mounted ? { opacity: 0 } : { opacity: 1 }}
-            whileInView={mounted ? { opacity: 1 } : {}}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            A powerful stack of technologies to provide a seamless experience
-          </motion.p>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { name: "Next.js 15", icon: "/icons/nextjs.svg", color: "from-primary to-secondary" },
-              { name: "Supabase", icon: "/icons/supabase.svg", color: "from-accent/80 to-secondary" },
-              { name: "Stripe", icon: "/icons/stripe.svg", color: "from-primary to-accent/80" },
-              { name: "ComfyUI", icon: "/icons/comfyui.svg", color: "from-secondary to-primary" },
-              { name: "Tailwind CSS", icon: "/icons/tailwind.svg", color: "from-accent/80 to-primary" },
-              { name: "TypeScript", icon: "/icons/typescript.svg", color: "from-secondary to-accent/80" },
-              { name: "Pixio API", icon: "/icons/pixio.svg", color: "from-primary to-secondary" },
-              { name: "ShadcnUI", icon: "/icons/shadcn.svg", color: "from-accent/80 to-primary" },
-            ].map((tech, index) => (
-              <MouseTrackCard key={tech.name}>
-                <motion.div
-                  className="glass-card p-4 text-center backdrop-blur-lg border border-white/20 dark:border-white/10 h-full"
-                  initial={mounted ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }}
-                  whileInView={mounted ? { opacity: 1, y: 0 } : {}}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: 0.1 * index }}
-                >
-                  <div className="text-center">
-                    <div className="h-12 flex items-center justify-center mb-2">
-                      <div
-                        className={`w-10 h-10 bg-gradient-to-br ${tech.color} rounded-md flex items-center justify-center text-white bg-opacity-90`}
-                      >
-                        {tech.name[0]}
-                      </div>
-                    </div>
-                    <p className="font-medium">{tech.name}</p>
-                  </div>
-                </motion.div>
-              </MouseTrackCard>
-            ))}
-          </div>
-        </div>
-      </motion.section>
-
-      {/* CTA section */}
-      <motion.section
-        className="py-20 z-10 relative"
-        initial={mounted ? { opacity: 0, y: 30 } : { opacity: 1, y: 0 }}
-        whileInView={mounted ? { opacity: 1, y: 0 } : {}}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-      >
-        <div className="container mx-auto px-4 text-center">
-          <motion.div
-            className="glass-card p-8 max-w-4xl mx-auto border border-white/20 dark:border-white/10 backdrop-blur-lg relative overflow-hidden rounded-xl"
-            initial={mounted ? { opacity: 0, scale: 0.95 } : { opacity: 1, scale: 1 }}
-            whileInView={mounted ? { opacity: 1, scale: 1 } : {}}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            {/* Animated highlights - client-side only */}
-            {mounted && (
-              <>
-                <div className="absolute -top-40 -left-40 w-80 h-80 bg-primary/20 rounded-full blur-3xl animate-pulse opacity-70"></div>
-                <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-secondary/20 rounded-full blur-3xl animate-pulse opacity-70" style={{ animationDelay: '1s' }}></div>
-              </>
-            )}
-
-            <motion.div
-              className="relative z-10"
-              initial={mounted ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }}
-              whileInView={mounted ? { opacity: 1, y: 0 } : {}}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              <div className="bg-white/10 backdrop-blur-xl w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-6">
-                <Zap className="h-8 w-8 text-primary" />
-              </div>
-
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-                Ready to Create with AI?
-              </h2>
-
-              <p className="text-lg text-foreground/80 mb-8 max-w-2xl mx-auto">
-                Start generating stunning images and videos today with our powerful AI machines and the Pixio API.
-              </p>
-
-              <MagneticButton className="bg-gradient-to-r from-primary/90 to-secondary/90 text-white hover:opacity-90 hover:shadow-lg transition-all shadow-md rounded-md py-2 px-6 font-medium">
-                <Link href={isAuthenticated ? "/dashboard" : "/signup"} className="flex items-center">
-                  {isAuthenticated ? "Go to Dashboard" : "Get Started"} <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </MagneticButton>
-            </motion.div>
-            
-          </motion.div>
-          
-        </div>
-       
-      </motion.section>
-      
-    </>
+        </section>
+      </main>
+      <Footer />
+    </div>
   );
 }

@@ -9,11 +9,11 @@ export const siteMetadata: Metadata = {
   // Basic metadata
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://pixio-api-starter.vercel.app'),
   title: {
-    default: 'Pixio API Starter',
-    template: '%s | Pixio API Starter'
+    default: 'AI Lounge After Dark',
+    template: '%s | AI Lounge After Dark'
   },
   description: 'Unleash AI creativity with Pixio API for stunning image and video generation, powered by Supabase, NextJS, and Stripe',
-  applicationName: 'Pixio API Starter',
+  applicationName: 'AI Lounge After Dark',
   authors: [{ name: 'Alisher Farhadi', url: 'https://pixio-api-starter.vercel.app' }],
   generator: 'Next.js',
   keywords: ['AI', 'image generation', 'video generation', 'Pixio API', 'ComfyUI', 'Supabase', 'SaaS', 'AI media', 'subscription', 'credits', 'artificial intelligence'],
@@ -53,7 +53,7 @@ export const siteMetadata: Metadata = {
   
   // AppLinks (deep linking)
   appleWebApp: {
-    title: 'Pixio API Starter',
+    title: 'AI Lounge After Dark',
     statusBarStyle: 'black-translucent',
     capable: true,
   },
@@ -73,8 +73,8 @@ export const siteMetadata: Metadata = {
   // Open Graph metadata
   openGraph: {
     type: 'website',
-    siteName: 'Pixio API Starter',
-    title: 'Pixio API Starter - AI Media Generation',
+    siteName: 'AI Lounge After Dark',
+    title: 'AI Lounge After Dark - AI Media Generation',
     description: 'Unleash AI creativity with Pixio API for stunning image and video generation, powered by Supabase, NextJS, and Stripe',
     locale: 'en_US',
     alternateLocale: ['fr_FR', 'es_ES', 'de_DE'],
@@ -108,7 +108,7 @@ export const siteMetadata: Metadata = {
     card: 'summary_large_image',
     site: '@pixio_ai',
     creator: '@pixio_ai',
-    title: 'Pixio API Starter - AI Media Generation',
+    title: 'AI Lounge After Dark - AI Media Generation',
     description: 'Unleash AI creativity with Pixio API for stunning image and video generation, powered by Supabase, NextJS, and Stripe',
     images: {
       url: '/metadata/twitter-image.png',
@@ -168,7 +168,7 @@ export const siteMetadata: Metadata = {
     'script:ld+json': JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
-      'name': 'Pixio API Starter',
+      'name': 'AI Lounge After Dark',
       'url': process.env.NEXT_PUBLIC_SITE_URL || 'https://pixio-api-starter.vercel.app',
       'description': 'Unleash AI creativity with powerful machines for stunning image and video generation',
       'applicationCategory': 'MultimediaApplication, AIApplication',

@@ -1,7 +1,13 @@
 // src/app/(marketing)/pricing/page.tsx
 import { createClient } from '@/lib/supabase/server';
 import { PRICING_TIERS, getTierByPriceId } from '@/lib/config/pricing';
+import { siteMetadata } from '@/lib/config/metadata';
 import { PricingClient } from '@/components/pricing/pricing-client';
+
+export const metadata = {
+  title: 'Pricing',
+  description: 'View the pricing plans for AI Lounge After Dark.',
+};
 
 export default async function PricingPage() {
   const supabase = await createClient();
@@ -46,19 +52,17 @@ export default async function PricingPage() {
   return (
     <div className="container mx-auto px-4 py-24">
       <div className="text-center max-w-7xl mx-auto mb-12">
-        <h1 className="text-4xl font-bold mb-4">Simple, Transparent Pricing</h1>
-        <p className="text-lg text-muted-foreground mb-8">
-          Choose the perfect plan for your needs. All plans include a 14-day free trial.
-        </p>
-        
-        {/* Client-side component for billing toggle */}
-        <PricingClient 
-          initialBillingInterval={userBillingInterval} 
-          pricingTiers={PRICING_TIERS} 
-          userTierId={userTierId}
-          isAuthenticated={!!user}
-        />
+        <div className="text-center">
+          <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
+            Pricing
+          </h1>
+          <p className="mt-6 text-lg leading-8 text-muted-foreground">
+            Choose the plan that's right for you and start creating with AI
+            Lounge After Dark.
+          </p>
+        </div>
       </div>
+      <PricingClient />
     </div>
   );
 }

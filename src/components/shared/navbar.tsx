@@ -2,6 +2,8 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
+import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
@@ -61,20 +63,25 @@ export function Navbar() {
   }, []);
   
   return (
-    <nav className={cn(
-      "fixed top-0 left-0 right-0 z-50 py-4 transition-all duration-300",
-      scrolled || !isMarketing 
-        ? "bg-background/80 backdrop-blur-md border-b border-primary/10"
-        : "bg-transparent"
-    )}>
+    <motion.nav
+      className={cn(
+        "fixed top-0 left-0 right-0 z-50 py-4 transition-all duration-300",
+        scrolled || !isMarketing 
+          ? "bg-background/80 backdrop-blur-md border-b border-primary/10"
+          : "bg-transparent"
+      )}
+    >
       <div className="container flex items-center justify-between mx-auto">
-        <Link href="/" className="flex items-center space-x-2">
-          <span className="text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent">
-            Pixio<span className="font-bold">API</span>
-          </span>
-        </Link>
+        <div className="flex items-center">
+          <Link href="/" className="flex items-center space-x-2">
+            <Image src="/logo.png" alt="AI Lounge After Dark" width={32} height={32} />
+            <span className="font-bold sm:inline-block">
+              AI Lounge After Dark
+            </span>
+          </Link>
+        </div>
         
-        <div className="flex items-center gap-4">
+        <div className="hidden items-center gap-4 md:flex">
           {isMarketing ? (
             // Marketing navigation
             <>
@@ -142,6 +149,6 @@ export function Navbar() {
           )}
         </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 }
