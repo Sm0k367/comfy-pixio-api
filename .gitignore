@@ -128,3 +128,7 @@ creds/
 *.sublime-workspace
 .eslintcache
 .jest-cache
+
+# Vercel
+.vercel
+.vercelignore
